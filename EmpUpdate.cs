@@ -12,22 +12,29 @@ namespace Project1
 {
     public partial class EmpUpdate : Form
     {
+        // Store the selected employee ID
         private int employeeId;
 
+        // Constructor that initializes the form and loads employee data based on the selected ID
         public EmpUpdate(int selectedEmployeeId)
         {
             InitializeComponent();
             this.employeeId = selectedEmployeeId;
 
-            
+            // Load data of the selected employee
             LoadEmployeeData();
         }
+
+        // Database connection string
         SqlConnection con = new SqlConnection(@"Data Source=LAPTOP-LT4EDDL6;Initial Catalog=payrolldb;Integrated Security=True");
+
+        // Load event when the form is loaded
         private void EmpUpdate_Load(object sender, EventArgs e)
         {
-            
+        
         }
 
+        // Method to load data of the selected employee into the form fields
         private void LoadEmployeeData()
         {
             con.Open();
@@ -39,10 +46,10 @@ namespace Project1
                 {
                     if (reader.Read())
                     {
+                        // Populate form fields with employee data
                         textBox1.Text = reader["first_name"].ToString();
                         textBox2.Text = reader["last_name"].ToString();
 
-                        
                         string gender = reader["gender"].ToString();
                         if (gender == "M")
                         {
@@ -57,9 +64,7 @@ namespace Project1
                         textBox3.Text = reader["address"].ToString();
                         textBox4.Text = reader["contact_number"].ToString();
                         dateTimePicker2.Value = (DateTime)reader["hired_date"];
-                        textBox5.Text = reader["overtime_rate"].ToString();
-                        textBox6.Text = reader["basic_salary"].ToString();
-                        textBox7.Text = reader["allowances"].ToString();
+                        comboBox1.Text = reader["designation"].ToString();
                     }
                     else
                     {
@@ -70,10 +75,10 @@ namespace Project1
             }
         }
 
-
+        // Method to update employee data based on changes made in the form
         private void UpdateEmployee()
-        { 
-            
+        {
+            // Update employee data in the database
             using (SqlCommand cmd = new SqlCommand("UPDATE Employees SET " +
                 "first_name = @first_name, " +
                 "last_name = @last_name, " +
@@ -82,11 +87,10 @@ namespace Project1
                 "address = @address, " +
                 "contact_number = @contact_number, " +
                 "hired_date = @hired_date, " +
-                "overtime_rate = @overtime_rate, " +
-                "basic_salary = @basic_salary, " +
-                "allowances = @allowances " +
+                "designation = @designation " +
                 "WHERE employee_id = @employee_id", con))
             {
+                // Set parameters for the update command
                 cmd.Parameters.AddWithValue("@employee_id", employeeId);
                 cmd.Parameters.AddWithValue("@first_name", textBox1.Text);
                 cmd.Parameters.AddWithValue("@last_name", textBox2.Text);
@@ -98,9 +102,7 @@ namespace Project1
                 cmd.Parameters.AddWithValue("@address", textBox3.Text);
                 cmd.Parameters.AddWithValue("@contact_number", textBox4.Text);
                 cmd.Parameters.AddWithValue("@hired_date", dateTimePicker2.Value);
-                cmd.Parameters.AddWithValue("@overtime_rate", int.Parse(textBox5.Text));
-                cmd.Parameters.AddWithValue("@basic_salary", decimal.Parse(textBox6.Text));
-                cmd.Parameters.AddWithValue("@allowances", decimal.Parse(textBox7.Text));
+                cmd.Parameters.AddWithValue("@designation", comboBox1.Text);
 
                 int rowsAffected = cmd.ExecuteNonQuery();
 
@@ -117,23 +119,51 @@ namespace Project1
             }
             
         }
+        // Click event handler for the update button
         private void button2_Click(object sender, EventArgs e)
         {
+            // Call the method to update employee data
             UpdateEmployee();
         }
 
+        // Click event handler for the clear button to reset form fields
         private void button3_Click(object sender, EventArgs e)
         {
+            // Clear all form fields
             textBox1.Text = "";
             textBox2.Text = "";
             textBox3.Text = "";
             textBox4.Text = "";
-            textBox5.Text = "";
-            textBox6.Text = "";
+            comboBox1.Text = "";
             radioButton1.Checked = false;
             radioButton2.Checked = false;
             radioButton1.Checked = false;
             radioButton2.Checked = false;
+        }
+
+        private void label8_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void panel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
